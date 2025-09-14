@@ -8,7 +8,7 @@ repository = "https://github.com/xynehq/websearch"
 homepage = "https://github.com/xynehq/websearch"
 keywords = ["search", "web", "api", "multi-provider", "aggregation"]
 authors = ["Zereraz"]
-readme = "README-RUST.md"
+readme = "README.md"
 
 [package.metadata]
 original_typescript_version = "https://github.com/PlustOrg/search-sdk"

@@ -42,7 +42,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-websearch = "0.0.1"
+websearch = "0.1.0"
 tokio = { version = "1.0", features = ["full"] }
 ```
 
@@ -247,6 +247,171 @@ let results = web_search(SearchOptions {
     provider: Box::new(provider),
     ..Default::default()
 }).await?;
+```
+
+## Command Line Interface (CLI)
+
+WebSearch also provides a powerful CLI tool for searching from the command line:
+
+### Installation as CLI Tool
+
+```bash
+# Install from source
+cargo install --path .
+
+# Or run directly
+cargo run --bin websearch -- --help
+```
+
+### CLI Usage
+
+#### Single Provider Search
+
+```bash
+# Search with DuckDuckGo (no API key required)
+websearch single "rust programming" --provider duckduckgo --max-results 5
+
+# Search with Google (requires API keys)
+export GOOGLE_API_KEY="your_key"
+export GOOGLE_CX="your_search_engine_id"
+websearch single "machine learning" --provider google --max-results 10 --format table
+
+# Search with Tavily AI (requires API key)
+export TAVILY_API_KEY="tvly-dev-your_key"
+websearch single "latest AI developments" --provider tavily --format json
+```
+
+#### Multi-Provider Search
+
+```bash
+# Aggregate results from multiple providers
+websearch multi "artificial intelligence" --strategy aggregate --max-results 5
+
+# Use failover strategy (try providers in order until one succeeds)
+websearch multi "quantum computing" --strategy failover --providers google,tavily,duckduckgo
+
+# Load balance across available providers
+websearch multi "blockchain technology" --strategy load-balance --stats
+```
+
+#### ArXiv Academic Search
+
+```bash
+# Search ArXiv by paper IDs
+websearch arxiv "2301.00001,2301.00002" --max-results 3
+
+# Search ArXiv by query
+websearch single "quantum machine learning" --provider arxiv --sort-by submitted-date
+```
+
+#### Provider Management
+
+```bash
+# List all available providers and their status
+websearch providers
+
+# Output shows which providers are available:
+# ✅ DuckDuckGo - No API key required
+# ❌ Google - Requires GOOGLE_API_KEY and GOOGLE_CX
+# ❌ Tavily - Requires TAVILY_API_KEY (AI-powered search)
+```
+
+### CLI Options
+
+#### Global Options
+- `--help` - Show help information
+- `--version` - Show version information
+
+#### Single Search Options
+- `--provider` - Search provider (google, tavily, exa, serpapi, duckduckgo, brave, searxng, arxiv)
+- `--max-results` - Maximum number of results (default: 10)
+- `--language` - Language code (e.g., en, es, fr)
+- `--region` - Region code (e.g., US, UK, DE)
+- `--safe-search` - Safe search setting (off, moderate, strict)
+- `--format` - Output format (table, json, simple)
+- `--debug` - Enable debug output
+- `--raw` - Show raw provider response
+
+#### Multi Search Options
+- `--strategy` - Multi-provider strategy (aggregate, failover, load-balance, race)
+- `--providers` - Specific providers to use
+- `--stats` - Show provider performance statistics
+
+#### ArXiv Options
+- `--sort-by` - Sort by field (relevance, submitted-date, last-updated-date)
+- `--sort-order` - Sort order (ascending, descending)
+
+### Environment Variables
+
+Set these environment variables to enable different providers:
+
+```bash
+# Google Custom Search
+export GOOGLE_API_KEY="your_google_api_key"
+export GOOGLE_CX="your_custom_search_engine_id"
+
+# Tavily AI Search (Recommended for AI/LLM applications)
+export TAVILY_API_KEY="tvly-dev-your_api_key"
+
+# SerpAPI (Google, Bing, Yahoo)
+export SERPAPI_API_KEY="your_serpapi_key"
+
+# Exa Semantic Search
+export EXA_API_KEY="your_exa_api_key"
+
+# Brave Search
+export BRAVE_API_KEY="your_brave_api_key"
+
+# SearXNG
+export SEARXNG_URL="https://your-searxng-instance.com"
+
+# DuckDuckGo and ArXiv work without API keys
+```
+
+### Output Formats
+
+#### Table Format (Default)
+```
+Search Results from duckduckgo
+────────────────────────────────────────────────────────────────────────────────
+1. Rust Programming Language
+   🔗 https://www.rust-lang.org/
+   🌐 rust-lang.org
+   📄 Rust is a fast, reliable, and productive programming language...
+   🔍 Provider: duckduckgo
+```
+
+#### Simple Format
+```
+1. Rust Programming Language
+   https://www.rust-lang.org/
+   Rust is a fast, reliable, and productive programming language...
+```
+
+#### JSON Format
+```json
+[
+  {
+    "url": "https://www.rust-lang.org/",
+    "title": "Rust Programming Language",
+    "snippet": "Rust is a fast, reliable, and productive programming language...",
+    "domain": "rust-lang.org",
+    "provider": "duckduckgo"
+  }
+]
+```
+
+### Testing CLI Functionality
+
+The CLI includes comprehensive automated tests:
+
+```bash
+# Run CLI integration tests
+cargo test --test cli_tests
+
+# Test specific functionality
+cargo test --test cli_tests test_providers_command
+cargo test --test cli_tests test_duckduckgo_search_dry_run
 ```
 
 ## Performance

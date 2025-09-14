@@ -1,6 +1,6 @@
 [package]
 name = "websearch"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 description = "Multi-provider web search SDK for Rust with smart aggregation, supporting Google, Exa, Tavily, SerpAPI and more"
 license = "MIT"
@@ -16,6 +16,10 @@ original_typescript_version = "https://github.com/PlustOrg/search-sdk"
 [lib]
 name = "websearch"
 path = "src/lib.rs"
+
+[[bin]]
+name = "websearch"
+path = "src/bin/main.rs"
 
 [dependencies]
 # HTTP client
@@ -42,6 +46,10 @@ chrono = { version = "0.4", features = ["serde"] }
 async-trait = "0.1"
 # Futures utilities
 futures = "0.3"
+# CLI argument parsing
+clap = { version = "4.4", features = ["derive", "env"] }
+# Enhanced terminal output
+colored = "2.0"
 
 [dev-dependencies]
 tokio-test = "0.4"

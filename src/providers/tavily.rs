@@ -260,7 +260,7 @@ mod tests {
     #[test]
     fn test_tavily_provider_new() {
         // Valid API key
-        let provider = TavilyProvider::new("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");
+        let provider = TavilyProvider::new("tvly-test-valid-api-key-format");
         assert!(provider.is_ok());
 
         // Empty API key
@@ -282,7 +282,7 @@ mod tests {
 
     #[test]
     fn test_tavily_provider_configuration() {
-        let provider = TavilyProvider::new("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")
+        let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
             .unwrap()
             .with_answer(false)
             .with_images(true);
@@ -294,7 +294,7 @@ mod tests {
 
     #[test]
     fn test_tavily_provider_advanced() {
-        let provider = TavilyProvider::new_advanced("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");
+        let provider = TavilyProvider::new_advanced("tvly-test-valid-api-key-format");
         assert!(provider.is_ok());
         let provider = provider.unwrap();
         assert_eq!(provider.search_depth, "advanced");
@@ -303,12 +303,12 @@ mod tests {
 
     #[test]
     fn test_tavily_search_depth_validation() {
-        let provider = TavilyProvider::new("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").unwrap();
+        let provider = TavilyProvider::new("tvly-test-valid-api-key-format").unwrap();
 
         // Valid search depths - create new providers for each test
-        let provider1 = TavilyProvider::new("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").unwrap();
-        let provider2 = TavilyProvider::new("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").unwrap();
-        let provider3 = TavilyProvider::new("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").unwrap();
+        let provider1 = TavilyProvider::new("tvly-test-valid-api-key-format").unwrap();
+        let provider2 = TavilyProvider::new("tvly-test-valid-api-key-format").unwrap();
+        let provider3 = TavilyProvider::new("tvly-test-valid-api-key-format").unwrap();
 
         assert!(provider1.with_search_depth("basic").is_ok());
         assert!(provider2.with_search_depth("advanced").is_ok());
@@ -319,13 +319,13 @@ mod tests {
 
     #[test]
     fn test_tavily_provider_name() {
-        let provider = TavilyProvider::new("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").unwrap();
+        let provider = TavilyProvider::new("tvly-test-valid-api-key-format").unwrap();
         assert_eq!(provider.name(), "tavily");
     }
 
     #[test]
     fn test_tavily_provider_config() {
-        let provider = TavilyProvider::new("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").unwrap();
+        let provider = TavilyProvider::new("tvly-test-valid-api-key-format").unwrap();
         let config = provider.config();
 
         assert_eq!(config.get("provider"), Some(&"tavily".to_string()));
@@ -336,7 +336,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_tavily_search_empty_query() {
-        let provider = TavilyProvider::new("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").unwrap();
+        let provider = TavilyProvider::new("tvly-test-valid-api-key-format").unwrap();
         let options = SearchOptions {
             query: "".to_string(),
             provider: Box::new(provider),

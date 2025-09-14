@@ -83,7 +83,7 @@ async fn test_tavily_successful_search() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url(&mock_server.uri());
 
@@ -118,7 +118,7 @@ async fn test_tavily_search_with_advanced_depth() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new_advanced("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")
+    let provider = TavilyProvider::new_advanced("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url(&mock_server.uri());
 
@@ -151,7 +151,7 @@ async fn test_tavily_search_with_images() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_images(true)
         .with_base_url(&mock_server.uri());
@@ -207,7 +207,7 @@ async fn test_tavily_rate_limit_handling() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url(&mock_server.uri());
 
@@ -238,7 +238,7 @@ async fn test_tavily_payment_required_error() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url(&mock_server.uri());
 
@@ -269,7 +269,7 @@ async fn test_tavily_server_error_handling() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url(&mock_server.uri());
 
@@ -297,7 +297,7 @@ async fn test_tavily_malformed_response() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url(&mock_server.uri());
 
@@ -330,7 +330,7 @@ async fn test_tavily_empty_results() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url(&mock_server.uri());
 
@@ -353,7 +353,7 @@ async fn test_tavily_max_results_limit() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url(&mock_server.uri());
 
@@ -391,7 +391,7 @@ async fn test_tavily_unicode_and_special_characters() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url(&mock_server.uri());
 
@@ -418,7 +418,7 @@ async fn test_tavily_request_timeout() {
         .mount(&mock_server)
         .await;
 
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url(&mock_server.uri());
 
@@ -437,7 +437,7 @@ async fn test_tavily_request_timeout() {
 #[tokio::test]
 async fn test_tavily_network_error() {
     // Test with invalid URL to simulate network error
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_base_url("http://invalid-url-that-does-not-exist.invalid");
 
@@ -455,7 +455,7 @@ async fn test_tavily_network_error() {
 
 #[tokio::test]
 async fn test_tavily_provider_configuration_persistence() {
-    let provider = TavilyProvider::new("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")
+    let provider = TavilyProvider::new("tvly-test-valid-api-key-format")
         .unwrap()
         .with_answer(false)
         .with_images(true)
@@ -487,6 +487,6 @@ fn test_tavily_api_key_format_validation() {
     }
 
     // Test valid format
-    let valid_result = TavilyProvider::new("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");
+    let valid_result = TavilyProvider::new("tvly-test-valid-api-key-format");
     assert!(valid_result.is_ok());
 }

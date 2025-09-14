@@ -15,9 +15,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("🔍 Tavily Search SDK Example");
     println!("============================\n");
 
-    // Get API key from environment or use the provided one
+    // Get API key from environment variable
     let api_key = env::var("TAVILY_API_KEY")
-        .unwrap_or_else(|_| "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".to_string());
+        .expect("TAVILY_API_KEY environment variable is required. Set it with: export TAVILY_API_KEY=tvly-dev-your-api-key");
 
     // Example 1: Basic search
     println!("📋 Example 1: Basic Tavily Search");

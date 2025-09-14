@@ -1,0 +1,52 @@
+[package]
+name = "websearch"
+version = "0.0.1"
+edition = "2021"
+description = "Multi-provider web search SDK for Rust with smart aggregation, supporting Google, Exa, Tavily, SerpAPI and more"
+license = "MIT"
+repository = "https://github.com/xynehq/websearch"
+homepage = "https://github.com/xynehq/websearch"
+keywords = ["search", "web", "api", "multi-provider", "aggregation"]
+authors = ["Zereraz"]
+readme = "README-RUST.md"
+
+[package.metadata]
+original_typescript_version = "https://github.com/PlustOrg/search-sdk"
+
+[lib]
+name = "websearch"
+path = "src/lib.rs"
+
+[dependencies]
+# HTTP client
+reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# URL manipulation
+url = "2.5"
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+# HTML parsing for providers like DuckDuckGo
+scraper = "0.18"
+# XML parsing for ArXiv
+quick-xml = { version = "0.31", features = ["serialize"] }
+# Logging
+log = "0.4"
+# Date/time handling
+chrono = { version = "0.4", features = ["serde"] }
+# Async traits
+async-trait = "0.1"
+# Futures utilities
+futures = "0.3"
+
+[dev-dependencies]
+tokio-test = "0.4"
+env_logger = "0.10"
+# Additional testing utilities
+tempfile = "3.8"
+wiremock = "0.5"
+serial_test = "3.0"

@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo build*)",
+      "Bash(cargo check*)",
+      "Bash(cargo test*)",
+      "Bash(cargo run*)",
+      "Bash(cargo fmt*)",
+      "Bash(cargo clippy*)",
+      "Bash(cargo clean*)",
+      "Bash(cargo doc*)",
+      "Bash(cargo update*)",
+      "Bash(cargo install*)",
+      "Bash(cargo publish --dry-run*)",
+      "Bash(rustc --version*)",
+      "Bash(rustup --version*)",
+      "Bash(./test.sh*)",
+      "Bash(./test_all.sh*)",
+      "Read(src/**/*.rs)",
+      "Read(examples/**/*.rs)",
+      "Read(tests/**/*.rs)",
+      "Read(Cargo.toml)",
+      "Read(Cargo.lock)",
+      "Read(README.md)",
+      "Read(USAGE_GUIDE.md)",
+      "Edit(src/**/*.rs)",
+      "Edit(examples/**/*.rs)",
+      "Edit(tests/**/*.rs)",
+      "Edit(Cargo.toml)",
+      "Write(src/**/*.rs)",
+      "Write(examples/**/*.rs)",
+      "Write(tests/**/*.rs)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Edit(./.env)",
+      "Edit(./.env.*)",
+      "Bash(rm -rf*)",
+      "Bash(sudo*)"
+    ]
+  },
+  "env": {
+    "RUST_BACKTRACE": "1",
+    "CARGO_TERM_COLOR": "always"
+  }
+}

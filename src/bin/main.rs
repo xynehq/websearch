@@ -19,49 +19,60 @@ use websearch::{
 #[command(version)]
 struct Cli {
     #[command(subcommand)]
-    command: Commands,
+    command: Option<Commands>,
+
+    /// Search query (when not using subcommands)
+    #[arg(value_name = "QUERY")]
+    query: Option<String>,
+
+    /// Search provider
+    #[arg(short, long, value_enum, default_value = "duckduckgo")]
+    provider: Option<Provider>,
+
+    /// Maximum number of results
+    #[arg(short, long, default_value = "10")]
+    max_results: Option<u32>,
+
+    /// Language code (e.g., en, es, fr)
+    #[arg(short, long)]
+    language: Option<String>,
+
+    /// Region code (e.g., US, UK, DE)
+    #[arg(short, long)]
+    region: Option<String>,
+
+    /// Safe search setting
+    #[arg(short, long, value_enum)]
+    safe_search: Option<SafeSearchCli>,
+
+    /// ArXiv paper IDs (comma-separated, for ArXiv provider)
+    #[arg(long)]
+    arxiv_ids: Option<String>,
+
+    /// Sort by field (for ArXiv)
+    #[arg(long, value_enum)]
+    sort_by: Option<SortByCli>,
+
+    /// Sort order (for ArXiv)
+    #[arg(long, value_enum)]
+    sort_order: Option<SortOrderCli>,
+
+    /// Enable debug output
+    #[arg(short, long)]
+    debug: bool,
+
+    /// Show raw provider response
+    #[arg(long)]
+    raw: bool,
+
+    /// Output format
+    #[arg(short, long, value_enum, default_value = "table")]
+    format: OutputFormat,
 }
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Search using a single provider
-    Single {
-        /// Search query
-        query: String,
-
-        /// Search provider
-        #[arg(short, long, value_enum)]
-        provider: Provider,
-
-        /// Maximum number of results
-        #[arg(short, long, default_value = "10")]
-        max_results: u32,
-
-        /// Language code (e.g., en, es, fr)
-        #[arg(short, long)]
-        language: Option<String>,
-
-        /// Region code (e.g., US, UK, DE)
-        #[arg(short, long)]
-        region: Option<String>,
-
-        /// Safe search setting
-        #[arg(short, long, value_enum)]
-        safe_search: Option<SafeSearchCli>,
-
-        /// Enable debug output
-        #[arg(short, long)]
-        debug: bool,
-
-        /// Show raw provider response
-        #[arg(long)]
-        raw: bool,
-
-        /// Output format
-        #[arg(short, long, value_enum, default_value = "table")]
-        format: OutputFormat,
-    },
-    /// Search using multiple providers
+    /// Search using multiple providers with advanced strategies
     Multi {
         /// Search query
         query: String,
@@ -89,27 +100,6 @@ enum Commands {
         /// Show provider statistics
         #[arg(long)]
         stats: bool,
-    },
-    /// Search ArXiv papers by ID
-    Arxiv {
-        /// Comma-separated ArXiv IDs (e.g., "1234.5678,2345.6789")
-        ids: String,
-
-        /// Maximum number of results
-        #[arg(short, long, default_value = "10")]
-        max_results: u32,
-
-        /// Sort by field
-        #[arg(long, value_enum)]
-        sort_by: Option<SortByCli>,
-
-        /// Sort order
-        #[arg(long, value_enum)]
-        sort_order: Option<SortOrderCli>,
-
-        /// Output format
-        #[arg(short, long, value_enum, default_value = "table")]
-        format: OutputFormat,
     },
     /// List available providers and their status
     Providers,
@@ -167,31 +157,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Single {
-            query,
-            provider,
-            max_results,
-            language,
-            region,
-            safe_search,
-            debug,
-            raw,
-            format,
-        } => {
-            handle_single_search(
-                query,
-                provider,
-                max_results,
-                language,
-                region,
-                safe_search,
-                debug,
-                raw,
-                format,
-            )
-            .await?;
-        }
-        Commands::Multi {
+        Some(Commands::Multi {
             query,
             strategy,
             providers,
@@ -199,33 +165,55 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             debug,
             format,
             stats,
-        } => {
+        }) => {
             handle_multi_search(query, strategy, providers, max_results, debug, format, stats).await?;
         }
-        Commands::Arxiv {
-            ids,
-            max_results,
-            sort_by,
-            sort_order,
-            format,
-        } => {
-            handle_arxiv_search(ids, max_results, sort_by, sort_order, format).await?;
-        }
-        Commands::Providers => {
+        Some(Commands::Providers) => {
             handle_list_providers().await?;
+        }
+        None => {
+            // Default search behavior
+            if let Some(query) = cli.query {
+                let provider = cli.provider.unwrap_or(Provider::Duckduckgo);
+                let max_results = cli.max_results.unwrap_or(10);
+
+                handle_search(
+                    query,
+                    provider,
+                    max_results,
+                    cli.language,
+                    cli.region,
+                    cli.safe_search,
+                    cli.arxiv_ids,
+                    cli.sort_by,
+                    cli.sort_order,
+                    cli.debug,
+                    cli.raw,
+                    cli.format,
+                )
+                .await?;
+            } else {
+                eprintln!("{}", "Error: Search query is required".red());
+                eprintln!("Usage: websearch \"your search query\" --provider duckduckgo");
+                eprintln!("Try: websearch --help");
+                std::process::exit(1);
+            }
         }
     }
 
     Ok(())
 }
 
-async fn handle_single_search(
+async fn handle_search(
     query: String,
     provider: Provider,
     max_results: u32,
     language: Option<String>,
     region: Option<String>,
     safe_search: Option<SafeSearchCli>,
+    arxiv_ids: Option<String>,
+    sort_by: Option<SortByCli>,
+    sort_order: Option<SortOrderCli>,
     debug: bool,
     raw: bool,
     format: OutputFormat,
@@ -233,8 +221,20 @@ async fn handle_single_search(
     let provider_name = format!("{:?}", provider).to_lowercase();
     let provider_box = create_provider(provider).await?;
 
+    // For ArXiv, use either query or IDs
+    let (search_query, id_list) = if provider_name == "arxiv" {
+        if let Some(ids) = arxiv_ids {
+            ("".to_string(), Some(ids))
+        } else {
+            (query.clone(), None)
+        }
+    } else {
+        (query.clone(), None)
+    };
+
     let options = SearchOptions {
-        query: query.clone(),
+        query: search_query,
+        id_list,
         max_results: Some(max_results),
         language,
         region,
@@ -242,6 +242,15 @@ async fn handle_single_search(
             SafeSearchCli::Off => SafeSearch::Off,
             SafeSearchCli::Moderate => SafeSearch::Moderate,
             SafeSearchCli::Strict => SafeSearch::Strict,
+        }),
+        sort_by: sort_by.map(|s| match s {
+            SortByCli::Relevance => SortBy::Relevance,
+            SortByCli::SubmittedDate => SortBy::SubmittedDate,
+            SortByCli::LastUpdatedDate => SortBy::LastUpdatedDate,
+        }),
+        sort_order: sort_order.map(|s| match s {
+            SortOrderCli::Ascending => SortOrder::Ascending,
+            SortOrderCli::Descending => SortOrder::Descending,
         }),
         debug: if debug {
             Some(DebugOptions {
@@ -318,38 +327,6 @@ async fn handle_multi_search(
         display_provider_stats(&multi_search);
     }
 
-    Ok(())
-}
-
-async fn handle_arxiv_search(
-    ids: String,
-    max_results: u32,
-    sort_by: Option<SortByCli>,
-    sort_order: Option<SortOrderCli>,
-    format: OutputFormat,
-) -> Result<(), Box<dyn std::error::Error>> {
-    let arxiv = ArxivProvider::new();
-
-    let options = SearchOptions {
-        query: "".to_string(), // ArXiv uses id_list instead
-        id_list: Some(ids),
-        max_results: Some(max_results),
-        sort_by: sort_by.map(|s| match s {
-            SortByCli::Relevance => SortBy::Relevance,
-            SortByCli::SubmittedDate => SortBy::SubmittedDate,
-            SortByCli::LastUpdatedDate => SortBy::LastUpdatedDate,
-        }),
-        sort_order: sort_order.map(|s| match s {
-            SortOrderCli::Ascending => SortOrder::Ascending,
-            SortOrderCli::Descending => SortOrder::Descending,
-        }),
-        provider: Box::new(arxiv),
-        ..Default::default()
-    };
-
-    let results = web_search(options).await?;
-
-    display_results(&results, &format, false, Some("arxiv"));
     Ok(())
 }
 

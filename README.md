@@ -1,25 +1,39 @@
-# WebSearch - Rust Web Search SDK
+# WebSearch - Rust Library & CLI Tool
 
-A high-performance Rust SDK for integrating with multiple web search providers through a single, consistent interface. Initially based on the [PlustOrg/search-sdk](https://github.com/PlustOrg/search-sdk) TypeScript library, this Rust implementation now includes additional features and enhancements beyond the original.
+A high-performance Rust library and command-line tool for searching across multiple web search providers. Use it as an SDK in your Rust applications or as a standalone CLI binary for direct command-line searches. Initially based on the [PlustOrg/search-sdk](https://github.com/PlustOrg/search-sdk) TypeScript library, this Rust implementation includes significant additional features and enhancements.
+
+## 📖 Table of Contents
+
+- [🚀 Installation](#-installation) - One command installs both library and CLI
+- [🚄 Quick Start](#-quick-start) - Get searching in seconds
+- [⚡ CLI Usage](#-command-line-interface-cli) - Command-line search tool
+- [📚 Library Usage](#library-usage) - Integrate into your Rust apps
+- [🔍 Supported Providers](#supported-search-providers) - Google, ArXiv, DuckDuckGo, and more
+- [🛠️ Advanced Features](#advanced-usage) - Multi-provider, debugging, error handling
 
 ## Features
 
-### Core Features (from original TypeScript SDK)
+### 🏗️ Dual Purpose Design
+- **📚 Rust Library**: Integrate web search into your Rust applications
+- **⚡ CLI Binary**: Ready-to-use command-line search tool
+- **🔧 Single Installation**: One `cargo install` command gets you both
+
+### 🔍 Search Capabilities
 - **Multiple Providers**: Unified interface for 8+ search providers
 - **Standardized Results**: Consistent result format across all providers
-- **Type Safe**: Full type safety with comprehensive error handling
-- **Debug Support**: Configurable logging for development and debugging
+- **Multi-Provider Search**: Query multiple search engines simultaneously
+- **Load Balancing**: Distribute requests across providers with failover support
+- **Result Aggregation**: Combine and merge results from multiple providers
 
-### Rust-Specific Enhancements
+### 🦀 Rust-Powered Performance
 - **High Performance**: Built with Rust for maximum speed and efficiency
 - **Memory Safe**: Zero-cost abstractions with compile-time safety guarantees
+- **Type Safe**: Full type safety with comprehensive error handling
 - **Async/Await**: Modern async Rust for non-blocking operations
 
-### Additional Features (Beyond Original)
-- **Multi-Provider Search**: Query multiple search engines simultaneously
-- **Load Balancing**: Distribute requests across providers with round-robin
-- **Failover Support**: Automatic fallback when primary providers fail
-- **Result Aggregation**: Combine and merge results from multiple providers
+### 🛠️ Developer Experience
+- **Simple CLI**: `websearch "your query"` - that's it!
+- **Debug Support**: Configurable logging for development and debugging
 - **Provider Statistics**: Track performance metrics for each search provider
 - **Race Strategy**: Use fastest responding provider for optimal performance
 
@@ -36,17 +50,117 @@ A high-performance Rust SDK for integrating with multiple web search providers t
 | **SearXNG** | ✅ Complete | No | Self-hosted privacy-focused search |
 | **ArXiv** | ✅ Complete | No | Academic papers and research |
 
-## Installation
+## 🚀 Installation
 
-Add this to your `Cargo.toml`:
+### One Command, Two Tools
 
-```toml
-[dependencies]
-websearch = "0.1.0"
-tokio = { version = "1.0", features = ["full"] }
+Install both the Rust library and CLI binary with a single command:
+
+```bash
+# Install both library and CLI tool
+cargo install --git https://github.com/xynehq/websearch.git
+
+# Verify installation
+websearch --version
+websearch "hello world" --max-results 1
 ```
 
-## Quick Start
+### Prerequisites
+
+- **Rust**: Version 1.70 or higher ([Install Rust](https://rustup.rs/))
+- **Internet connection**: Required for API-based search providers
+
+### Installation Options
+
+#### 🌟 Option 1: Direct Install (Recommended)
+```bash
+# Install from GitHub (gets you the latest features)
+cargo install --git https://github.com/xynehq/websearch.git
+
+# Test the CLI immediately
+websearch "rust programming" --provider duckduckgo --max-results 3
+```
+
+#### 📦 Option 2: From Crates.io (Coming Soon)
+```bash
+# Install from crates.io (when published)
+cargo install websearch
+
+# Test the installation
+websearch --help
+```
+
+#### 🔧 Option 3: Development Install
+```bash
+# Clone and install from source
+git clone https://github.com/xynehq/websearch.git
+cd websearch
+cargo install --path .
+
+# Run tests to verify everything works
+cargo test
+```
+
+### What You Get
+
+After installation, you have access to:
+
+✅ **CLI Binary**: `websearch` command available globally
+✅ **Rust Library**: Add `websearch = "0.1.1"` to your `Cargo.toml`
+✅ **All Providers**: Google, Tavily, DuckDuckGo, ArXiv, and more
+✅ **No API Keys Needed**: Start searching immediately with DuckDuckGo
+
+### Quick Verification
+
+```bash
+# Check CLI is installed
+websearch --version
+
+# Test search (no API keys needed)
+websearch "test query" --max-results 1
+
+# See all available providers
+websearch providers
+
+# Test as library in your Rust project
+echo '[dependencies]
+websearch = "0.1.1"
+tokio = { version = "1.0", features = ["full"] }' >> Cargo.toml
+```
+
+### Troubleshooting
+
+**Common Issues:**
+
+- **"command not found: websearch"** → Add `~/.cargo/bin` to your PATH
+- **Build errors** → Update Rust: `rustup update stable`
+- **Network issues** → Try: `cargo install --git https://github.com/xynehq/websearch.git --offline`
+
+**Platform Support:**
+- ✅ **Linux**: Works out of the box
+- ✅ **macOS**: Requires Xcode tools: `xcode-select --install`
+- ✅ **Windows**: Requires Visual Studio Build Tools
+- 🐳 **Docker**: See `Dockerfile` in repository
+
+## 🚄 Quick Start
+
+### As a CLI Tool (Instant Search)
+
+```bash
+# Search with default provider (DuckDuckGo - no API key needed)
+websearch "rust async programming"
+
+# Search with specific provider
+websearch "quantum computing" --provider arxiv --max-results 5
+
+# Multi-provider aggregation
+websearch multi "artificial intelligence" --strategy aggregate --max-results 3
+
+# List available providers and their status
+websearch providers
+```
+
+### As a Rust Library (SDK)
 
 ```rust
 use websearch::{web_search, providers::GoogleProvider, SearchOptions};
@@ -76,9 +190,31 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-## Provider Examples
+## 🎯 Why Use WebSearch?
 
-### Google Custom Search
+### For CLI Users
+- **🚀 Zero Setup**: Works immediately with DuckDuckGo (no API keys needed)
+- **🔄 Multiple Providers**: Switch between 8+ search engines with a simple flag
+- **📊 Rich Output**: Table, JSON, or simple text formats
+- **🎛️ Advanced Features**: Multi-provider search with aggregation strategies
+
+### For Rust Developers
+- **🦀 Native Performance**: Built with Rust for speed and safety
+- **🔧 Type Safety**: Full compile-time guarantees and error handling
+- **🔄 Provider Flexibility**: Easy to swap providers or use multiple simultaneously
+- **🛠️ Production Ready**: Async/await, comprehensive error handling, debug support
+
+### For Both
+- **🌐 8+ Search Providers**: Google, Tavily AI, ArXiv, DuckDuckGo, Brave, Exa, SerpAPI, SearXNG
+- **📈 Multi-Provider**: Aggregate results, failover, load balancing, race strategies
+- **🔒 Secure**: Environment-based API key management
+- **📖 Well Documented**: Comprehensive examples and clear error messages
+
+## 📚 Library Usage
+
+### Provider Examples
+
+#### Google Custom Search
 
 ```rust
 use websearch::{web_search, providers::GoogleProvider, SearchOptions, types::SafeSearch};
@@ -251,34 +387,47 @@ let results = web_search(SearchOptions {
 
 ## Command Line Interface (CLI)
 
-WebSearch also provides a powerful CLI tool for searching from the command line:
+WebSearch provides a powerful CLI tool for searching from the command line with a simple, intuitive interface:
 
-### Installation as CLI Tool
+### CLI Design Philosophy
+
+The CLI uses a simplified structure:
+- **Default behavior**: `websearch "query"` searches using DuckDuckGo (no API key required)
+- **Single provider**: `websearch "query" --provider google` searches with a specific provider
+- **Multi-provider**: `websearch multi "query" --strategy aggregate` for advanced multi-provider searches
+- **Provider list**: `websearch providers` to see all available search engines
+
+### Quick Start with CLI
+
+After installation, you can immediately start searching:
 
 ```bash
-# Install from source
-cargo install --path .
+# Quick test with DuckDuckGo (no API key needed)
+websearch "rust programming" --provider duckduckgo --max-results 3
 
-# Or run directly
-cargo run --bin websearch -- --help
+# List all available providers
+websearch providers
+
+# Get help for any command
+websearch --help
 ```
 
 ### CLI Usage
 
-#### Single Provider Search
+#### Default Search (Single Provider)
 
 ```bash
-# Search with DuckDuckGo (no API key required)
-websearch single "rust programming" --provider duckduckgo --max-results 5
+# Search with DuckDuckGo (no API key required) - default provider
+websearch "rust programming" --max-results 5
 
 # Search with Google (requires API keys)
 export GOOGLE_API_KEY="your_key"
 export GOOGLE_CX="your_search_engine_id"
-websearch single "machine learning" --provider google --max-results 10 --format table
+websearch "machine learning" --provider google --max-results 10 --format table
 
 # Search with Tavily AI (requires API key)
 export TAVILY_API_KEY="tvly-dev-your_key"
-websearch single "latest AI developments" --provider tavily --format json
+websearch "latest AI developments" --provider tavily --format json
 ```
 
 #### Multi-Provider Search
@@ -298,10 +447,10 @@ websearch multi "blockchain technology" --strategy load-balance --stats
 
 ```bash
 # Search ArXiv by paper IDs
-websearch arxiv "2301.00001,2301.00002" --max-results 3
+websearch "" --provider arxiv --arxiv-ids "2301.00001,2301.00002" --max-results 3
 
 # Search ArXiv by query
-websearch single "quantum machine learning" --provider arxiv --sort-by submitted-date
+websearch "quantum machine learning" --provider arxiv --sort-by submitted-date
 ```
 
 #### Provider Management
@@ -322,24 +471,25 @@ websearch providers
 - `--help` - Show help information
 - `--version` - Show version information
 
-#### Single Search Options
-- `--provider` - Search provider (google, tavily, exa, serpapi, duckduckgo, brave, searxng, arxiv)
-- `--max-results` - Maximum number of results (default: 10)
+#### Default Search Options
+- `--provider` - Search provider (google, tavily, exa, serpapi, duckduckgo, brave, searxng, arxiv) [default: duckduckgo]
+- `--max-results` - Maximum number of results [default: 10]
 - `--language` - Language code (e.g., en, es, fr)
 - `--region` - Region code (e.g., US, UK, DE)
 - `--safe-search` - Safe search setting (off, moderate, strict)
-- `--format` - Output format (table, json, simple)
+- `--format` - Output format (table, json, simple) [default: table]
 - `--debug` - Enable debug output
 - `--raw` - Show raw provider response
 
-#### Multi Search Options
+#### ArXiv-Specific Options
+- `--arxiv-ids` - Comma-separated ArXiv paper IDs (for ArXiv provider)
+- `--sort-by` - Sort by field (relevance, submitted-date, last-updated-date)
+- `--sort-order` - Sort order (ascending, descending)
+
+#### Multi Search Options (for `multi` subcommand)
 - `--strategy` - Multi-provider strategy (aggregate, failover, load-balance, race)
 - `--providers` - Specific providers to use
 - `--stats` - Show provider performance statistics
-
-#### ArXiv Options
-- `--sort-by` - Sort by field (relevance, submitted-date, last-updated-date)
-- `--sort-order` - Sort order (ascending, descending)
 
 ### Environment Variables
 
@@ -572,6 +722,26 @@ let results = web_search(SearchOptions {
     ..Default::default()
 }).await?;
 ```
+
+## 🎉 Get Started Now
+
+```bash
+# Install once, get both CLI and library
+cargo install --git https://github.com/xynehq/websearch.git
+
+# Start searching immediately (no API keys needed)
+websearch "your search query"
+
+# Or use in your Rust project
+echo 'websearch = "0.1.1"' >> Cargo.toml
+```
+
+**Perfect for:**
+- 🏃‍♂️ **Quick searches** from the command line
+- 🔬 **Research projects** requiring academic papers (ArXiv)
+- 🤖 **AI applications** needing web data
+- 🏢 **Enterprise applications** with multiple search requirements
+- 📊 **Data science** projects requiring diverse search sources
 
 ---
 

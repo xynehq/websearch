@@ -1,12 +1,12 @@
 [package]
 name = "websearch"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
-description = "Multi-provider web search SDK for Rust with smart aggregation, supporting Google, Exa, Tavily, SerpAPI and more"
+description = "High-performance Rust library and CLI tool for multi-provider web search. Supports Google, ArXiv, DuckDuckGo, Tavily AI, and more with aggregation strategies."
 license = "MIT"
 repository = "https://github.com/xynehq/websearch"
 homepage = "https://github.com/xynehq/websearch"
-keywords = ["search", "web", "api", "multi-provider", "aggregation"]
+keywords = ["search", "web", "cli", "multi-provider", "library"]
 authors = ["Zereraz"]
 readme = "README.md"
 

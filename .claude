@@ -1,0 +1,46 @@
+# Claude Code Configuration for websearch project
+
+# Auto-approve common Rust/Cargo commands
+auto_approve_commands = [
+    "cargo build",
+    "cargo build --release",
+    "cargo check",
+    "cargo test",
+    "cargo test --",
+    "cargo run",
+    "cargo run --example",
+    "cargo run --bin",
+    "cargo fmt",
+    "cargo clippy",
+    "cargo clean",
+    "cargo doc",
+    "cargo update",
+    "cargo install",
+    "cargo publish --dry-run",
+    "rustc --version",
+    "rustup --version"
+]
+
+# Project-specific commands for this search SDK
+project_commands = [
+    "cargo run --example basic_search",
+    "cargo run --example serpapi_test",
+    "cargo run --example multi_provider_search",
+    "./test.sh",
+    "./test_all.sh"
+]
+
+# Development environment setup
+environment = "rust"
+project_type = "library"
+
+# Allow file operations without prompts for common Rust patterns
+auto_approve_file_patterns = [
+    "src/**/*.rs",
+    "examples/**/*.rs",
+    "tests/**/*.rs",
+    "Cargo.toml",
+    "Cargo.lock",
+    ".env",
+    "README.md"
+]
